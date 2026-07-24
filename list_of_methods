@@ -1,0 +1,76 @@
+# create_user_test - ok
+        #____ models:
+        # create_user_request
+        # create_user_response
+
+        #____ requesters:
+        # create_user_requester
+
+        #____bd
+        #--models - ok
+
+# user_login_test - проверка бд избыточна
+        #____ models:
+        # user_login_request
+        # user_login_response
+
+        #____ requesters:
+        # user_login_requester
+
+
+# create_account_test - ок
+        #____ models:
+        # create_account_response
+
+        #____ requesters:
+        # create_account_requester
+
+        #____bd
+        #--models - ok
+
+# deposit_account_test - ok
+        #____ models:
+        # deposit_account_request
+        # deposit_account_response
+
+        #____ requesters:
+        # deposit_account_requester
+
+# transfer_account_test - ok
+        #____ models:
+        # transfer_account_request
+        # transfer_account_response
+
+        #____ requesters:
+        # transfer_account_requester
+
+        #____bd
+        #--models - ok
+
+# credit_request_test -
+        #____ models:
+        # credit_request_request
+        # credit_request_response
+
+        #____ requesters:
+        # credit_request_requester
+
+        #____bd
+        #--models - ok
+
+# credit_repay_test - - возможно е нужна отдельная модель
+        #____ models:
+        # credit_repay_request
+        # credit_repay_response
+
+        #____ requesters:
+        # credit_repay_requester
+
+
+
+
+
+
+
+
+
