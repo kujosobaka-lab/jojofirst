@@ -4,6 +4,7 @@ from typing import Optional
 from requests import Response
 from src.main.api.configs.config import Config
 import requests
+import allure
 
 
 class CrudRequester(HttpRequester):
@@ -11,10 +12,18 @@ class CrudRequester(HttpRequester):
         body = model.model_dump() if model is not None else ''
 
 # тут есть базовый урл и любой эндпоинт
+        with allure.step(f'POST {Config.fetch('backendUrl')}{self.endpoint.value.url}'):
+            allure.attach(str(body), 'Request body', allure.attachment_type.JSON)
+
         response = requests.post(
             url=f'{Config.fetch('backendUrl')}{self.endpoint.value.url}',
             headers=self.request_spec,
             json=body
+        )
+        allure.attach(
+            response.text,
+            'Response body',
+            allure.attachment_type.JSON
         )
         self.response_spec(response)
         return response

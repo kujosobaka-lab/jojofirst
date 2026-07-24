@@ -10,7 +10,7 @@ class Config:
         if cls._isinstance is None:
             cls._isinstance = super(Config, cls).__new__(cls)
 
-            config_path = Path(__file__).parents[4] / 'resourсes' / 'urls.properties'
+            config_path = Path(__file__).parents[4] / 'resources' / 'urls.properties'
 
             if not config_path.exists():
                 raise FileNotFoundError(f'Config path not found {config_path}')
