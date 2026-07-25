@@ -67,6 +67,29 @@
         # credit_repay_requester
 
 
+# убранные ассерты
+# транзакции
+# assert response.amount == credit_request_data.amount, 'Одобрена неверная сумма кредита'
+# assert credit_from_db.balance == -credit_request_data.amount, 'В БД неверный остаток по кредиту' # на случай если отрицательный баланс это норма
+# assert credit_from_db.account_id == credit_request_data.accountId, 'Кредит привязан к неверному счету'
+# assert transaction.amount == credit_request_data.amount, 'В БД записана неверная сумма выдачи кредита'
+# assert credit_from_db.term_months == credit_request_data.termMonths, 'В БД сохранен неверный срок кредита'
+
+# assert credit_from_db.account_id == credit_repay_data.accountId, 'Погашение выполнено для неверного счета'
+# assert transaction.amount == credit_repay_data.amount, 'В БД записана неверная сумма погашения кредита'
+# assert credit_from_db.balance == -credit_from_db.amount, 'Остаток кредита изменился после неуспешного погашения'
+
+# assert transaction.amount == transfer_account_data.amount, 'В БД сохранена неверная сумма перевода'
+
+# to_account = AccountCrudDb.get_account_by_id(db_session,transfer_account_data.toAccountId)
+# assert to_account.balance == transfer_account_data.amount, 'Баланс счета получателя изменился неверно'
+
+# from_account = AccountCrudDb.get_account_by_id(db_session,transfer_account_invalid_amount_data.fromAccountId)
+# to_account = AccountCrudDb.get_account_by_id(db_session,transfer_account_invalid_amount_data.toAccountId)
+# assert from_account.balance == transfer_deposit_data.amount, 'Баланс счета-отправителя изменился после неуспешного перевода'
+# assert to_account.balance == 0, 'Баланс счета-получателя изменился после неуспешного перевода'
+
+
 
 
 

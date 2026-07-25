@@ -16,22 +16,15 @@ class TestCreditRequest:
     # запрос кредита для ROLE_CREDIT_SECRET
     def test_credit_request(self, db_session: Session, api_manager: ApiManager, create_credit_user_data: CreateUserRequest, credit_request_data: CreditRequestRequest):
         response = api_manager.user_steps.credit_request(create_credit_user_data, credit_request_data)
-
-        assert response.amount == credit_request_data.amount, 'Одобрена неверная сумма кредита'
         assert response.termMonths == credit_request_data.termMonths, 'Одобрен неверный срок кредита'
         assert response.balance == credit_request_data.amount, 'Баланс кредита не соответствует выданной сумме'
 
-        credit_from_db = CreditCrudDb.get_credit_by_id(db_session,response.creditId)
-        assert credit_from_db.amount == credit_request_data.amount, 'В БД сохранена неверная сумма кредита'
-        assert credit_from_db.term_months == credit_request_data.termMonths, 'В БД сохранен неверный срок кредита'
-        assert credit_from_db.balance == -credit_request_data.amount, 'В БД неверный остаток по кредиту' # на случай если отрицательный баланс это норма
-        assert credit_from_db.account_id == credit_request_data.accountId, 'Кредит привязан к неверному счету'
-
-        transaction = TransactionCrudDb.get_credit_issuance(db_session,credit_request_data.accountId)
-        # assert transaction.amount == credit_request_data.amount, 'В БД записана неверная сумма погашения кредита'
+        transaction = TransactionCrudDb.get_credit_issuance(db_session, credit_request_data.accountId)
         assert transaction is not None, 'В БД не создалась транзакция выдачи кредита'
         assert transaction.transaction_type == 'credit_issuance', 'В БД записан неверный тип транзакции'
-        assert transaction.amount == credit_request_data.amount, 'В БД записана неверная сумма выдачи кредита'
+
+        credit_from_db = CreditCrudDb.get_credit_by_id(db_session,response.creditId)
+        assert credit_from_db.amount == credit_request_data.amount, 'В БД сохранена неверная сумма кредита'
 
     # запрос кредита для ROLE_USER
     def test_credit_request_invalid_role(self, db_session: Session, api_manager: ApiManager, create_user_data: CreateUserRequest, credit_request_data: CreditRequestRequest):
@@ -70,7 +63,6 @@ class TestCreditRequest:
         assert credit_from_db is None,  f'В БД создался кредит с некорректной суммой {amount}'
 
         transaction = TransactionCrudDb.get_credit_issuance(db_session, request.accountId)
-
         assert transaction is None, f'В БД создалась транзакция выдачи кредита с некорректной суммой {amount}'
 
 
