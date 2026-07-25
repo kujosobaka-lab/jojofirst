@@ -1,2 +1,0 @@
-Final data: {'username': 'FdpOnN3bNcos2mo', 'password': 'EXWx26_!_$', 'role': 'ROLE_USER'}
-ROLE_CREDIT_SECRET

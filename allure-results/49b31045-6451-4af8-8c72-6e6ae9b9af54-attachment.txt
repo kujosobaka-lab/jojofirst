@@ -1,1 +1,0 @@
-Final data: {'username': 'UR6V', 'password': 'EHIf05__$$', 'role': 'ROLE_USER'}
