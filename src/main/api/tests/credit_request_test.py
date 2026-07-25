@@ -3,7 +3,6 @@
 
 import pytest
 from requests import Session
-
 from src.main.api.classes.api_manager import ApiManager
 from src.main.api.db.crud.credit_crud import CreditCrudDb
 from src.main.api.db.crud.transaction_crud import TransactionCrudDb

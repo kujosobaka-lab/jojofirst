@@ -21,13 +21,14 @@ class TestTransferAccount:
                                     transfer_account_data: TransferAccountRequest):
         api_manager.user_steps.deposit_account(create_user_data, transfer_deposit_data)
         response = api_manager.user_steps.transfer_account(create_user_data, transfer_account_data)
-        assert response.fromAccountIdBalance == (transfer_deposit_data.amount - transfer_account_data.amount), 'Баланс счета-отправителя после перевода рассчитан неверно'
+        expected_balance = round(transfer_deposit_data.amount - transfer_account_data.amount, 2)
+        assert round(response.fromAccountIdBalance, 2) == expected_balance, 'Баланс счета-отправителя после перевода рассчитан неверно'
 
         transaction = TransactionCrudDb.get_transfer(db_session, transfer_account_data.fromAccountId, transfer_account_data.toAccountId)
         assert transaction.transaction_type == 'transfer',  'В БД сохранен неверный тип транзакции'
 
         from_account = AccountCrudDb.get_account_by_id(db_session, transfer_account_data.fromAccountId)
-        assert from_account.balance == (transfer_deposit_data.amount - transfer_account_data.amount), 'Баланс счета отправителя изменился неверно'
+        assert round(from_account.balance, 2) == expected_balance, 'Баланс счета отправителя изменился неверно'
 
 
     # ПРОВЕРКА, что переводимая сумма меньше баланса на счету-1
@@ -40,7 +41,8 @@ class TestTransferAccount:
                                       transfer_account_invalid_amount_data: TransferAccountRequest):
         api_manager.user_steps.deposit_account(create_user_data, transfer_deposit_data)
         response = api_manager.user_steps.transfer_account_invalid(create_user_data, transfer_account_invalid_amount_data)
-        assert response.json()['error'] == 'Insufficient funds. Current balance: 1100.00, required: 1200.00', 'Не вернулось сообщение о недостаточном балансе'
+        expected_error = (f"Insufficient funds. Current balance: {transfer_deposit_data.amount:.2f}, "f"required: {transfer_account_invalid_amount_data.amount:.2f}")
+        assert response.json()['error'] == expected_error, 'Не вернулось сообщение о недостаточном балансе'
 
         transaction = TransactionCrudDb.get_transfer(db_session, transfer_account_invalid_amount_data.fromAccountId, transfer_account_invalid_amount_data.toAccountId)
         assert transaction is None, 'В БД создалась транзакция после неуспешного перевода'

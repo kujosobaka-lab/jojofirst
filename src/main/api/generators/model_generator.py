@@ -25,13 +25,35 @@ class RandomModelGenerator:
             if rule and rule.regex:
                 value = RandomModelGenerator._generate_from_regex(rule.regex, actual_type)
             elif rule and rule.value_range:
-                value=RandomModelGenerator._generate_from_tuple(rule.value_range)
+                value=RandomModelGenerator._generate_from_tuple(rule.value_range, actual_type)
             else:
                 value = RandomModelGenerator._generate_value(actual_type)
 
             init_data[filed_name] = value
         print(f"Final data: {init_data}")
         return cls(**init_data)
+
+ # добавлено для генерации сумм
+    @staticmethod
+    def generate_field(cls: type, field_name: str):
+        type_hints = get_type_hints(cls, include_extras=True)
+
+        annotated_type = type_hints[field_name]
+        rule = None
+        actual_type = annotated_type
+
+        if get_origin(annotated_type) is Annotated:
+            actual_type, *annotations = get_args(annotated_type)
+            for ann in annotations:
+                if isinstance(ann, CreationRule):
+                    rule = ann
+
+        if rule and rule.regex:
+            return RandomModelGenerator._generate_from_regex(rule.regex, actual_type)
+        elif rule and rule.value_range:
+            return RandomModelGenerator._generate_from_tuple(rule.value_range, actual_type)
+        else:
+            return RandomModelGenerator._generate_value(actual_type)
 
     @staticmethod
     def _generate_from_regex(regex: str, field_type: type) -> Any:
@@ -42,10 +64,19 @@ class RandomModelGenerator:
             return float(generated)
         return generated
 
+    # @staticmethod
+    # def _generate_from_tuple(value_range: tuple[float, float]) -> float:
+    #     min_value, max_value = value_range
+    #     return round(random.uniform(min_value, max_value), 1)
+
     @staticmethod
-    def _generate_from_tuple(value_range: tuple[float, float]) -> float:
+    def _generate_from_tuple(value_range: tuple[float, float], field_type: type) -> Any:
         min_value, max_value = value_range
-        return round(random.uniform(min_value, max_value), 1)
+
+        if field_type is int:
+            return random.randint(int(min_value), int(max_value))
+
+        return round(random.uniform(min_value, max_value), 2)
 
     @staticmethod
     def _generate_value(field_type: type) -> Any:
