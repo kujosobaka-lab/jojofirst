@@ -14,7 +14,6 @@ from src.main.api.db.models.user_table import User
 class TestCreateAccount:
     def test_create_account(self, db_session: Session, api_manager: ApiManager, create_user_data: CreateUserRequest):
         response = api_manager.user_steps.create_account(create_user_data)
-
         assert response.balance == 0, 'Счет создан с ненулевым балансом'
 
         account_from_db = AccountCrudDb.get_account_by_id(db_session, response.id)
@@ -25,7 +24,6 @@ class TestCreateAccount:
         first_account = api_manager.user_steps.create_account(create_user_data)
         api_manager.user_steps.create_account(create_user_data)
         response = api_manager.user_steps.create_account_maximum(create_user_data)
-
         assert response.json()['error'] == 'User already has maximum number of accounts(2)', 'Для пользователя создано более двух аккаунтов'
 
         user_from_db = AccountCrudDb.get_account_by_id(db_session, first_account.id)

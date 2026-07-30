@@ -1,0 +1,13 @@
+# Allure отчеты
+allure-results/
+allure-report/
+
+# Python кеш
+__pycache__/
+*.pyc
+
+# PyCharm настройки
+.idea/
+
+# Переменные окружения
+.env

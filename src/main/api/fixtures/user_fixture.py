@@ -1,4 +1,5 @@
 import pytest
+import random
 from src.main.api.generators.model_generator import RandomModelGenerator
 from src.main.api.models.credit_repay_response import CreditRepayResponse
 from src.main.api.models.create_user_request import CreateUserRequest
@@ -26,18 +27,17 @@ def create_account_data(api_manager, create_user_data):
 
 @pytest.fixture
 def deposit_account_data(create_account_data):
-    amount = 1000 #надо будет сделать генератор
+    # amount = 1000 #надо будет сделать генератор
     return DepositAccountRequest(
         accountId=create_account_data.id,
-        amount=amount
+        amount=RandomModelGenerator.generate_field(DepositAccountRequest, 'amount')
     )
 
 @pytest.fixture
 def deposit_account_nonid_data(create_account_data):
-    amount = 1000
     return DepositAccountRequest(
         accountId=1_1,
-        amount=amount
+        amount=RandomModelGenerator.generate_field(DepositAccountRequest, 'amount')
     )
 
 # создание двух счетов
@@ -53,17 +53,19 @@ def transfer_deposit_data(create_several_account_data):
     first_account, second_account = create_several_account_data
     return DepositAccountRequest(
         accountId=first_account.id,
-        amount=1100
+        # amount=1100
+        amount = RandomModelGenerator.generate_field(DepositAccountRequest, 'amount')
     )
 
 # для перевода
 @pytest.fixture
-def transfer_account_data(create_several_account_data):
+def transfer_account_data(create_several_account_data, transfer_deposit_data):
     first_account, second_account = create_several_account_data
     return TransferAccountRequest(
         fromAccountId=first_account.id,
         toAccountId=second_account.id,
-        amount=500
+        # amount=500
+        amount = round(random.uniform(1, transfer_deposit_data.amount - 1), 2)
     )
 
 @pytest.fixture
@@ -92,8 +94,9 @@ def create_credit_account_data(api_manager, create_credit_user_data):
 def credit_request_data(api_manager, create_credit_account_data): # ничего не отправляет, просто создает объект
    return CreditRequestRequest(
        accountId=create_credit_account_data.id,
-       amount=5000,
-       termMonths=12
+       # amount=5000,
+       amount = RandomModelGenerator.generate_field(CreditRequestRequest, 'amount'),
+       termMonths = RandomModelGenerator.generate_field(CreditRequestRequest, 'termMonths')
    )
 
 @pytest.fixture
